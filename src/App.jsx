@@ -18,7 +18,7 @@ import { auth, db } from './firebase';
 // --- IMPORT COMPONENT AUTH ---
 import AuthModal from './AuthModal'; 
 
-const EXAM_APP_URL = "https://ujian.liezira.com"; 
+const EXAM_APP_URL = "https://utbk-simulation-tester-student.vercel.app/"; 
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -94,7 +94,7 @@ const App = () => {
             {/* Logo */}
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => setView(user ? 'dashboard' : 'landing')}>
               <div className="bg-indigo-600 text-white p-2 rounded-xl shadow-lg shadow-indigo-200"><Brain size={24} /></div>
-              <span className="font-bold text-xl tracking-tight text-gray-900">Liezira<span className="text-indigo-600">Edu</span></span>
+              <span className="font-bold text-xl tracking-tight text-gray-900">Ruang<span className="text-indigo-600">Simulasi</span></span>
             </div>
 
             {/* Menu Kanan */}
@@ -142,10 +142,10 @@ const App = () => {
           <div className="max-w-6xl mx-auto px-4 text-center">
             <div className="flex justify-center items-center gap-2 mb-4 opacity-50">
               <Brain size={24} />
-              <span className="font-bold text-xl">LieziraEdu</span>
+              <span className="font-bold text-xl">RuangSimulasi</span>
             </div>
             <p className="text-gray-400 text-sm mb-6">Platform Simulasi UTBK SNBT Paling Akurat & Terpercaya.</p>
-            <p className="text-gray-300 text-xs">© {new Date().getFullYear()} Liezira Education. All rights reserved.</p>
+            <p className="text-gray-300 text-xs">© {new Date().getFullYear()} Liezira.Tech All rights reserved.</p>
           </div>
         </footer>
       )}
@@ -203,7 +203,7 @@ const LandingPage = ({ onBuy, onLogin }) => {
       <section id="features" className="py-24 px-4 bg-white relative">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kenapa Harus LieziraEdu?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Kenapa Harus Ruang Simulasi?</h2>
             <p className="text-gray-500 max-w-2xl mx-auto">Pengalaman ujian yang sesungguhnya agar kamu tidak kaget di hari H.</p>
           </div>
 
