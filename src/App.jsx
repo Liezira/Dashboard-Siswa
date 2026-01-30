@@ -38,14 +38,6 @@ import {
 // --- IMPORT COMPONENT AUTH ---
 import AuthModal from './AuthModal';
 
-// --- CONFIG FIREBASE ---
-const firebaseConfig = {
-  // ... Paste Config Firebase Kamu Di Sini ...
-  apiKey: VITE_FIREBASE_AUTH_DOMAIN,
-  authDomain: VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: VITE_FIREBASE_PROJECT_ID,
-};
-
 // Inisialisasi Firebase (Sesuai kode kamu yang jalan)
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
