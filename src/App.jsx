@@ -381,7 +381,7 @@ const StudentDashboard = ({ user, autoOpenPayment, clearPending }) => {
       <div className="bg-gradient-to-br from-indigo-900 to-indigo-700 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
-            <h2 className="text-3xl font-bold mb-2">Halo, {user.displayName} 🚀</h2>
+            <h2 className="text-3xl font-bold mb-2">Halo, {user.displayName}</h2>
             <p className="text-indigo-200">Saldo Credit: <strong>{userData?.credits || 0}</strong></p>
           </div>
           <button onClick={() => setShowTopUpModal(true)} className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold shadow-md hover:bg-indigo-50 transition flex items-center gap-2">
