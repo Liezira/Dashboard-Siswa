@@ -3,7 +3,7 @@ import {
   CreditCard, LayoutDashboard, LogOut, CheckCircle2, Zap, 
   ShieldCheck, Brain, Rocket, ChevronRight, Menu, X, Star, 
   History, Plus, Loader2, Copy, BarChart3, Clock, AlertTriangle, 
-  Wallet, Ticket, Trophy, Sparkles, QrCode, RefreshCw, Lock, Mail, User, School, LogIn, UserPlus, ArrowLeft
+  Wallet, Ticket, Trophy, Sparkles, QrCode, RefreshCw, Lock, Mail, User, School, LogIn, UserPlus, ArrowLeft, ArrowRight
 } from 'lucide-react';
 
 // --- FIREBASE IMPORTS ---
@@ -16,14 +16,6 @@ import {
 // --- CONFIG ---
 import { auth, db } from './firebase'; 
 
-// ==========================================
-// FIX #4: TEMPORARY PLACEHOLDER FOR EXAM
-// ==========================================
-// OPTION A: Jika Anda sudah punya file UTBKStudentApp.jsx
-//           → Uncomment line berikut & comment Placeholder component
-// import UTBKStudentApp from './UTBKStudentApp'; 
-
-// OPTION B: Jika belum punya, gunakan placeholder dulu
 const UTBKStudentApp = ({ prefilledToken, onExamComplete }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center p-8">
@@ -56,14 +48,13 @@ const UTBKStudentApp = ({ prefilledToken, onExamComplete }) => {
 };
 
 // ==========================================
-// REST OF THE CODE TETAP SAMA
 // (AuthenticationScreen, PackageSelection, PaymentModal, StudentDashboard, App)
 // ==========================================
 
 const EXAM_APP_URL = "https://ujian.liezira.com"; 
 
 // ==========================================
-// 1. KOMPONEN: AUTHENTICATION SCREEN
+// 1. KOMPONEN: AUTHENTICATION SCREEN (RE-DESIGNED)
 // ==========================================
 const AuthenticationScreen = ({ onAuthSuccess }) => {
   const [mode, setMode] = useState('login'); 
@@ -98,52 +89,163 @@ const AuthenticationScreen = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center p-4">
-      <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl w-full max-w-md border border-white/20 shadow-2xl">
-        <div className="text-center mb-8 text-white">
-          <img src="/LogoRuangSimulasi.svg" alt="Logo Ruang Simulasi" size={32}/>
-          <h1 className="text-2xl font-bold">{mode === 'login' ? 'Selamat Datang' : 'Daftar Akun'}</h1>
-          <p className="text-white/70 text-sm">Platform Simulasi UTBK Terpercaya</p>
+    <div className="min-h-screen bg-[#0F172A] relative flex items-center justify-center p-4 overflow-hidden font-sans">
+      
+      {/* --- BACKGROUND AMBIENT GLOW --- */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-40 animate-pulse delay-1000"></div>
+      
+      {/* --- MAIN CARD --- */}
+      <div className="relative bg-white/5 backdrop-blur-xl border border-white/10 p-8 md:p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl z-10">
+        
+        {/* LOGO SECTION */}
+        <div className="flex flex-col items-center justify-center mb-8 relative">
+          {/* Logo Glow Behind */}
+          <div className="absolute inset-0 bg-indigo-500 blur-[50px] opacity-20 rounded-full w-24 h-24 mx-auto top-4"></div>
+          
+          {/* Floating Syntax Elements (Visual Decoration) */}
+          <div className="absolute -left-2 top-0 animate-bounce delay-700 opacity-60">
+            <Sparkles className="text-yellow-400 w-6 h-6" />
+          </div>
+          <div className="absolute -right-2 top-8 animate-bounce delay-1000 opacity-60">
+            <Brain className="text-pink-400 w-6 h-6" />
+          </div>
+
+          <img 
+            src="/LogoRuangSimulasi.svg" 
+            alt="Logo Ruang Simulasi" 
+            className="w-32 h-32 md:w-40 md:h-40 object-contain relative z-10 drop-shadow-2xl" 
+          />
+          
+          <div className="text-center mt-4">
+            <h1 className="text-3xl font-black text-white tracking-tight">
+              {mode === 'login' ? 'Selamat Datang' : 'Mulai Sekarang'}
+            </h1>
+            <p className="text-indigo-200/80 text-sm mt-1 font-medium">
+              Platform Simulasi UTBK #1
+            </p>
+          </div>
         </div>
         
+        {/* FORM */}
         <form onSubmit={handleAuth} className="space-y-4">
           {mode === 'register' && (
-            <>
-              <input type="text" placeholder="Nama Lengkap" className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400" required value={formData.displayName} onChange={e=>setFormData({...formData, displayName:e.target.value})} />
-              <input type="text" placeholder="Asal Sekolah" className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400" required value={formData.school} onChange={e=>setFormData({...formData, school:e.target.value})} />
-            </>
+            <div className="space-y-4 animate-in slide-in-from-bottom-2 fade-in duration-300">
+              <div className="relative">
+                <User className="absolute left-4 top-3.5 text-indigo-300 w-5 h-5" />
+                <input 
+                  type="text" 
+                  placeholder="Nama Lengkap" 
+                  className="w-full pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+                  required 
+                  value={formData.displayName} 
+                  onChange={e=>setFormData({...formData, displayName:e.target.value})} 
+                />
+              </div>
+              <div className="relative">
+                <School className="absolute left-4 top-3.5 text-indigo-300 w-5 h-5" />
+                <input 
+                  type="text" 
+                  placeholder="Asal Sekolah" 
+                  className="w-full pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+                  required 
+                  value={formData.school} 
+                  onChange={e=>setFormData({...formData, school:e.target.value})} 
+                />
+              </div>
+            </div>
           )}
-          <input type="email" placeholder="Email" className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400" required value={formData.email} onChange={e=>setFormData({...formData, email:e.target.value})} />
-          <input type="password" placeholder="Password" className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-400" required value={formData.password} onChange={e=>setFormData({...formData, password:e.target.value})} />
           
-          <button disabled={loading} className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-bold shadow-lg transition flex justify-center items-center gap-2">
-            {loading ? <Loader2 className="animate-spin"/> : (mode === 'login' ? 'Masuk' : 'Daftar')}
+          <div className="relative">
+            <Mail className="absolute left-4 top-3.5 text-indigo-300 w-5 h-5" />
+            <input 
+              type="email" 
+              placeholder="Email Kamu" 
+              className="w-full pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+              required 
+              value={formData.email} 
+              onChange={e=>setFormData({...formData, email:e.target.value})} 
+            />
+          </div>
+          
+          <div className="relative">
+            <Lock className="absolute left-4 top-3.5 text-indigo-300 w-5 h-5" />
+            <input 
+              type="password" 
+              placeholder="Password" 
+              className="w-full pl-12 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all" 
+              required 
+              value={formData.password} 
+              onChange={e=>setFormData({...formData, password:e.target.value})} 
+            />
+          </div>
+          
+          <button 
+            disabled={loading} 
+            className="w-full py-3.5 mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/30 transform hover:-translate-y-0.5 transition-all flex justify-center items-center gap-2"
+          >
+            {loading ? <Loader2 className="animate-spin"/> : (
+              <>
+                {mode === 'login' ? 'Masuk Dashboard' : 'Daftar Akun'}
+                <ArrowRight size={18} />
+              </>
+            )}
           </button>
         </form>
-        <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')} className="w-full mt-4 text-white/70 text-sm hover:text-white underline">
-          {mode === 'login' ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login'}
-        </button>
+
+        <div className="mt-6 text-center">
+          <p className="text-white/60 text-sm mb-2">
+            {mode === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'}
+          </p>
+          <button 
+            onClick={() => setMode(mode === 'login' ? 'register' : 'login')} 
+            className="text-white font-semibold hover:text-indigo-300 transition-colors border-b border-transparent hover:border-indigo-300"
+          >
+            {mode === 'login' ? 'Buat Akun Baru' : 'Login Sekarang'}
+          </button>
+        </div>
       </div>
     </div>
   );
 };
 
 // ==========================================
-// 2. KOMPONEN: PACKAGE SELECTION (Midtrans)
+// 2. KOMPONEN: PACKAGE SELECTION (Midtrans - Fixed Prices)
 // ==========================================
 const PackageSelection = ({ user, onClose, onPaymentInitiated }) => {
   const [loading, setLoading] = useState(false);
+  
+  // FIX: HARGA DISESUAIKAN DENGAN LANDING PAGE
   const packages = [
-    { id: 'pkg_hemat', name: 'Paket Hemat', credits: 1, price: 10000, color: 'from-blue-500 to-cyan-500' },
-    { id: 'pkg_pejuang', name: 'Paket Pejuang', credits: 3, price: 20000, color: 'from-orange-500 to-red-500', best: true },
-    { id: 'pkg_pro', name: 'Paket Sultan', credits: 10, price: 50000, color: 'from-purple-500 to-pink-500' }
+    { 
+      id: 'pkg_hemat', 
+      name: 'Paket Hemat', 
+      credits: 1, 
+      price: 10000, 
+      color: 'from-blue-500 to-cyan-500' 
+    },
+    { 
+      id: 'pkg_pejuang', 
+      name: 'Paket Pejuang', 
+      credits: 3, 
+      price: 25000, // Diubah dari 20.000 ke 25.000
+      color: 'from-purple-500 to-pink-500', 
+      best: true 
+    },
+    { 
+      id: 'pkg_pro', 
+      name: 'Paket Sultan', 
+      credits: 10, 
+      price: 75000, // Diubah dari 50.000 ke 75.000
+      color: 'from-orange-500 to-red-500' 
+    }
   ];
 
   const handleBuy = async (pkg) => {
     setLoading(true);
     try {
       const idToken = await user.getIdToken();
-      const res = await fetch('/api/createPayment', {
+      const res = await fetch('https://admin.ruangsimulasi.com/api/createPayment', { // Pastikan URL API benar
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({ packageId: pkg.id })
@@ -162,23 +264,42 @@ const PackageSelection = ({ user, onClose, onPaymentInitiated }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white w-full max-w-4xl rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Pilih Paket Belajar</h2>
-          <button onClick={onClose} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200"><X size={20}/></button>
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-4xl rounded-3xl p-6 md:p-8 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-2xl font-black text-gray-900">Top Up Credits</h2>
+            <p className="text-gray-500 text-sm">Pilih paket simulasi sesuai kebutuhanmu</p>
+          </div>
+          <button onClick={onClose} className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition"><X size={20}/></button>
         </div>
+        
         <div className="grid md:grid-cols-3 gap-6">
           {packages.map(pkg => (
-            <div key={pkg.id} className="border rounded-2xl p-6 hover:shadow-xl transition relative overflow-hidden">
-              {pkg.best && <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-xl">BEST VALUE</div>}
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${pkg.color} flex items-center justify-center text-white mb-4 shadow-md`}>
-                <Zap fill="currentColor"/>
+            <div key={pkg.id} className={`border-2 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300 relative overflow-hidden bg-white ${pkg.best ? 'border-purple-400 ring-4 ring-purple-50' : 'border-gray-100'}`}>
+              
+              {pkg.best && (
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">
+                  PALING POPULER
+                </div>
+              )}
+
+              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pkg.color} flex items-center justify-center text-white mb-5 shadow-lg`}>
+                <Zap fill="currentColor" size={24}/>
               </div>
-              <h3 className="font-bold text-xl mb-1">{pkg.name}</h3>
-              <div className="text-3xl font-black text-gray-800 mb-4">{pkg.credits} <span className="text-sm font-medium text-gray-500">Credits</span></div>
-              <p className="text-gray-500 text-sm mb-6">Rp {pkg.price.toLocaleString('id-ID')}</p>
-              <button onClick={() => handleBuy(pkg)} disabled={loading} className={`w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r ${pkg.color} hover:opacity-90 transition`}>
+              
+              <h3 className="font-bold text-xl text-gray-900 mb-1">{pkg.name}</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-black text-gray-900">{pkg.credits}</span>
+                <span className="text-sm font-medium text-gray-500">Token Ujian</span>
+              </div>
+              
+              <div className="py-4 border-t border-gray-100 mb-4">
+                <p className="text-gray-400 text-xs mb-1">Harga Paket</p>
+                <p className="text-2xl font-black text-indigo-600">Rp {pkg.price.toLocaleString('id-ID')}</p>
+              </div>
+
+              <button onClick={() => handleBuy(pkg)} disabled={loading} className={`w-full py-3.5 rounded-xl font-bold text-white bg-gradient-to-r ${pkg.color} hover:opacity-90 transition shadow-lg`}>
                 {loading ? <Loader2 className="animate-spin mx-auto"/> : 'Beli Sekarang'}
               </button>
             </div>
