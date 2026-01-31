@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, onSnapshot, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from './firebase'; 
 
 // --- COMPONENTS ---
@@ -12,8 +12,9 @@ import PackageSelection from './PackageSelection';
 import { 
   Brain, Zap, Trophy, BarChart3, Shield, Clock, 
   ChevronRight, CheckCircle, Star, MessageCircle, 
-  ArrowRight, Menu, X, Phone, Mail, Users, Award, Target,
-  LogOut, Plus, History, Instagram, Facebook, Twitter
+  ArrowRight, Menu, X, Phone, Mail, MapPin, Instagram, 
+  Facebook, Twitter, Award, Users, Target, TrendingUp,
+  LogOut, Plus, History // Icon tambahan untuk Dashboard
 } from 'lucide-react';
 
 // ==========================================
@@ -24,7 +25,7 @@ const Dashboard = ({ user }) => {
   const [showPackageModal, setShowPackageModal] = useState(false);
   const navigate = useNavigate();
 
-  // Ambil Data User Realtime (Credits)
+  // Ambil Data User Realtime
   useEffect(() => {
     if (!user) return;
     const unsub = onSnapshot(doc(db, 'users', user.uid), (doc) => {
@@ -39,20 +40,24 @@ const Dashboard = ({ user }) => {
   };
 
   const handleGenerateToken = () => {
+    // Cek saldo credit
     if ((userData?.credits || 0) < 1) {
-        alert("Credit tidak cukup! Silakan Top Up via Admin.");
+        alert("Credit tidak cukup! Silakan beli credit terlebih dahulu.");
         setShowPackageModal(true);
         return;
     }
-    alert("Sistem Token Otomatis belum aktif. Hubungi Admin untuk generate manual sementara.");
+    // Logic generate token (sementara alert dulu)
+    alert("Hubungi Admin untuk menukar Credit dengan Token Ujian.");
   };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       {/* Navbar Dashboard */}
       <nav className="bg-white border-b px-6 py-4 flex justify-between items-center sticky top-0 z-40 shadow-sm">
-        <div className="flex items-center gap-2 font-bold text-xl text-gray-800">
-          <Brain className="text-indigo-600"/> RuangSimulasi
+        <div className="flex items-center gap-2">
+           {/* Logo Gambar di Dashboard */}
+           <img src="/LogoRuangSimulasi.svg" alt="Logo" className="w-10 h-10" />
+           <span className="font-bold text-xl text-gray-800">RuangSimulasi</span>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:block text-right">
@@ -112,18 +117,19 @@ const Dashboard = ({ user }) => {
 };
 
 // ==========================================
-// 2. LANDING PAGE COMPONENT (Original Kamu)
+// 2. LANDING PAGE COMPONENT (Sesuai Request Kamu)
 // ==========================================
 const LandingPageContent = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const navigate = useNavigate();
 
+  // Navigation Handler
   const handleAuth = () => {
     navigate('/signup'); 
   };
 
-  // --- Data Configuration (ASLI DARI KODEMU) ---
+  // --- Data Configuration ---
   const features = [
     { icon: <Brain className="w-8 h-8" />, title: "Soal Berkualitas Tinggi", description: "Ribuan soal berkualitas yang disusun oleh tim expert sesuai kisi-kisi UTBK terbaru.", color: "from-blue-500 to-cyan-500" },
     { icon: <BarChart3 className="w-8 h-8" />, title: "Analisis Performa", description: "Setiap simulasi langsung dipecah: subtest lemah, waktu terbuang, dan potensi naik skor.", color: "from-purple-500 to-pink-500" },
@@ -164,16 +170,16 @@ const LandingPageContent = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      
       {/* Navigation Bar */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">
             <div className="flex items-center gap-3">
-              {/* Ganti dengan Logo Kamu */}
-              <div className="bg-indigo-600 text-white p-2 rounded-lg"><Brain size={24}/></div> 
-              <span className="font-bold text-xl tracking-tight text-gray-900">Ruang<span className="text-indigo-600">Simulasi</span></span>
+              <img src="/LogoRuangSimulasi.svg" alt="Logo Ruang Simulasi" className="w-20 h-20 md:w-28 md:h-28" />
             </div>
             
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-gray-600 hover:text-indigo-600 font-medium transition">Fitur</a>
               <a href="#pricing" className="text-gray-600 hover:text-indigo-600 font-medium transition">Harga</a>
@@ -183,11 +189,13 @@ const LandingPageContent = () => {
               <button onClick={handleAuth} className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition">Mulai Gratis</button>
             </div>
             
+            {/* Mobile Menu Toggle */}
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 rounded-lg hover:bg-gray-100">
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
+          {/* Mobile Menu Dropdown */}
           {mobileMenuOpen && (
             <div className="md:hidden py-4 space-y-3 border-t border-gray-100 bg-white absolute left-0 right-0 px-4 shadow-xl z-50">
               <a href="#features" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">Fitur</a>
@@ -268,7 +276,16 @@ const LandingPageContent = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-start">
             {packages.map((pkg, idx) => (
-              <div key={idx} className={`relative bg-white rounded-3xl p-6 md:p-8 border-2 transition-all duration-300 ${pkg.popular ? 'border-purple-300 shadow-xl md:shadow-2xl z-10 scale-100 md:scale-105 order-first md:order-none' : 'border-gray-200 shadow-lg hover:shadow-xl scale-100'}`}>
+              <div 
+                key={idx} 
+                className={`
+                  relative bg-white rounded-3xl p-6 md:p-8 border-2 transition-all duration-300
+                  ${pkg.popular 
+                    ? 'border-purple-300 shadow-xl md:shadow-2xl z-10 scale-100 md:scale-105 order-first md:order-none'
+                    : 'border-gray-200 shadow-lg hover:shadow-xl scale-100'
+                  }
+                `}
+              >
                 {pkg.popular && <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-3 py-1 md:px-4 md:py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs md:text-sm font-bold rounded-full shadow-lg whitespace-nowrap">⭐ PALING POPULER</div>}
                 
                 <div className={`w-12 h-12 bg-gradient-to-br ${pkg.color} rounded-xl flex items-center justify-center text-white mb-6 shadow-lg`}><Zap fill="currentColor" /></div>
@@ -353,8 +370,7 @@ const LandingPageContent = () => {
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="bg-indigo-600 text-white p-1 rounded"><Brain size={24}/></div>
-                <span className="font-bold text-xl tracking-tight text-white">Ruang<span className="text-indigo-400">Simulasi</span></span>
+                <img src="/LogoRuangSimulasi.svg" alt="Logo Ruang Simulasi" className="w-20 h-20 md:w-28 md:h-28"></img>
               </div>
               <p className="text-gray-400 mb-6 leading-relaxed max-w-md text-sm md:text-base">Platform simulasi UTBK terpercaya yang membantu ribuan siswa mencapai skor impian mereka.</p>
               <div className="flex gap-4">
