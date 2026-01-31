@@ -19,8 +19,8 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
     },
     {
       icon: <BarChart3 className="w-8 h-8" />,
-      title: "Analisis Mendalam",
-      description: "Dapatkan analisis detail performa kamu di setiap subtest untuk improvement maksimal.",
+      title: "Analisis Performa",
+      description: "Setiap simulasi langsung dipecah: subtest lemah, waktu terbuang, dan potensi naik skor.",
       color: "from-purple-500 to-pink-500"
     },
     {
@@ -124,6 +124,10 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
     {
       question: "Apakah ada garansi uang kembali?",
       answer: "Maaf, credits yang sudah dibeli tidak bisa di-refund. Namun kami menjamin kualitas platform dan soal-soal kami."
+    },
+    {
+      question: "Apakah semua paket punya fitur yang sama?",
+      answer: "Ya. Semua paket mendapatkan fitur dan kualitas yang sama. Perbedaannya hanya jumlah token atau kesempatan latihan. Kami percaya semua pejuang UTBK berhak mendapat pengalaman terbaik."
     }
   ];
 
@@ -212,10 +216,11 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               di UTBK 2026
             </h1>
             
-            <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Platform simulasi UTBK terlengkap dengan ribuan soal berkualitas, analisis mendalam, dan sistem yang mirip ujian asli. Persiapkan dirimu dengan maksimal!
-            </p>
-            
+           <p className="text-lg md:text-xl mb-10 opacity-90">
+            UTBK cuma sekali. Persiapannya jangan coba-coba.
+            Satu simulasi bisa mengubah strategi belajarmu.
+          </p>
+    
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={onGetStarted}
@@ -286,7 +291,11 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               Pilih paket yang sesuai dengan kebutuhanmu. Semakin banyak, semakin hemat!
             </p>
           </div>
-
+            <p className="text-sm md:text-base text-gray-500 mt-4 max-w-xl mx-auto">
+              Semua paket memiliki <span className="font-semibold text-gray-700">fitur yang sama</span>.
+              Perbedaannya hanya pada <span className="font-semibold text-gray-700">jumlah token (kesempatan latihan)</span>.
+              Semakin sering latihan, semakin matang strategi dan mentalmu.
+            </p>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {packages.map((pkg, idx) => (
               <div 
@@ -305,15 +314,27 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                   <Zap fill="currentColor" />
                 </div>
                 
-                <h3 className="text-2xl font-black text-gray-900 mb-2">{pkg.name}</h3>
-                <div className="flex items-baseline mb-6">
-                  <span className="text-4xl font-black text-gray-900">Rp {pkg.price}</span>
-                </div>
-                
-                <div className="text-lg font-bold text-indigo-600 mb-6">
-                  {pkg.credits} Credits
-                </div>
-                
+                <h3 className="text-2xl font-black text-gray-900 mb-1">{pkg.name}</h3>
+                  {pkg.popular && (
+                    <p className="text-sm text-gray-500 mb-4">
+                      Paling seimbang untuk progres nyata
+                    </p>
+                  )}
+
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-4xl font-black text-gray-900">Rp {pkg.price}</span>
+                  </div>
+
+                  <div className="text-lg font-bold text-indigo-600 mb-3">
+                    {pkg.credits} Credits
+                  </div>
+
+                  {pkg.popular && (
+                    <div className="mb-5 text-sm font-medium text-gray-700 bg-indigo-50 rounded-xl px-4 py-3">
+                      🎯 Ideal untuk menemukan pola salah & strategi terbaik sebelum UTBK
+                    </div>
+                  )}  
+
                 <ul className="space-y-3 mb-8">
                   {pkg.features.map((feature, i) => (
                     <li key={i} className="flex items-center gap-3 text-gray-600">
@@ -336,6 +357,9 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
       </section>
 
       {/* TESTIMONIALS */}
+      <span className="inline-block text-xs font-semibold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full mb-3">
+        Pejuang UTBK
+      </span>
       <section id="testimonials" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
