@@ -234,8 +234,8 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                 className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl border-2 border-indigo-200 transform hover:-translate-y-1 transition"
               >
                 Sudah Punya Akun?
-              </button>
-            </div></a>
+              </button></a>
+            </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
