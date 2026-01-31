@@ -3,7 +3,7 @@ import { Zap, X, CheckCircle2, Star } from 'lucide-react';
 
 const PackageSelection = ({ user, onClose }) => {
   // ⚠️ GANTI NOMOR WA ADMIN DI SINI (Format: 628xxx)
-  const ADMIN_WHATSAPP = "6281234567890"; 
+  const ADMIN_WHATSAPP = "6287789345701"; 
 
   // Data Paket (Disamakan dengan setup-packages.js kamu)
   const packages = [
