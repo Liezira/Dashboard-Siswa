@@ -21,6 +21,85 @@ import {
 // 1. HALAMAN KHUSUS PROSES VERIFIKASI (BARU)
 // ==========================================
 // Menangani link dari email, validasi, dan redirect ke dashboard
+// ==========================================
+// HALAMAN DETAIL HASIL UJIAN (BARU)
+// ==========================================
+const ResultPage = () => {
+  const { tokenCode } = useParams(); // Ambil token dari URL
+  const navigate = useNavigate();
+  const [resultData, setResultData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchResult = async () => {
+      try {
+        const docRef = doc(db, 'tokens', tokenCode);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          setResultData(docSnap.data());
+        } else {
+          alert("Data ujian tidak ditemukan");
+          navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error("Error fetching result:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResult();
+  }, [tokenCode, navigate]);
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-indigo-600 w-10 h-10"/></div>;
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 font-sans">
+      <div className="max-w-2xl mx-auto">
+        <button onClick={() => navigate('/dashboard')} className="mb-6 flex items-center gap-2 text-gray-500 hover:text-indigo-600 transition font-medium">
+          <ArrowRight className="rotate-180" size={20}/> Kembali ke Dashboard
+        </button>
+
+        <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+          
+          <h1 className="text-2xl font-bold text-gray-800 mb-2">Hasil Simulasi UTBK</h1>
+          <p className="text-gray-500 mb-8 font-mono bg-gray-100 inline-block px-3 py-1 rounded-lg text-sm">{resultData?.tokenCode}</p>
+
+          <div className="flex justify-center items-center mb-8">
+            <div className="relative">
+              {/* Lingkaran Nilai */}
+              <div className="w-40 h-40 rounded-full border-8 border-indigo-100 flex items-center justify-center bg-white shadow-inner">
+                <div>
+                  <span className="block text-5xl font-black text-indigo-600">{resultData?.score || 0}</span>
+                  <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Skor Akhir</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            <div className="bg-green-50 p-4 rounded-2xl border border-green-100">
+              <p className="text-green-600 text-xs font-bold uppercase">Benar</p>
+              <p className="text-2xl font-black text-green-700">{resultData?.correctAnswers || 0}</p>
+            </div>
+            <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
+              <p className="text-red-600 text-xs font-bold uppercase">Salah/Kosong</p>
+              <p className="text-2xl font-black text-red-700">{resultData?.wrongAnswers || 0}</p>
+            </div>
+          </div>
+
+          {/* Note: Logic detail per subtest bisa ditambahkan nanti disini jika data dari exam app sudah lengkap */}
+          <div className="bg-indigo-50 rounded-xl p-4 text-sm text-indigo-800 text-left leading-relaxed">
+            <strong>Catatan:</strong><br/>
+            Teruslah berlatih! Analisis detail per subtes akan segera tersedia di update berikutnya.
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
