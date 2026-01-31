@@ -145,8 +145,11 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                  <img src="/public/LogoRuangSimulasi.svg" type="image/svg+xml" alt="Logo" className="w-8 h-8" />
-                <Brain className="w-6 h-6 text-white" />
+                <img
+                  src="/LogoRuangSimulasi.svg"
+                  alt="Logo Ruang Simulasi"
+                  className="w-8 h-8"
+                />
               </div>
               <span className="text-xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                 RuangSimulasi
