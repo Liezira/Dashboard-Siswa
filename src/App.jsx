@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+// 1. IMPORT NAVIGATE DARI REACT ROUTER
+import { useNavigate } from 'react-router-dom';
 import { 
   Brain, Zap, Trophy, BarChart3, Shield, Clock, 
   ChevronRight, CheckCircle, Star, MessageCircle, 
@@ -6,9 +8,17 @@ import {
   Facebook, Twitter, Award, Users, Target, TrendingUp
 } from 'lucide-react';
 
-const LandingPage = ({ onGetStarted, onLogin }) => {
+const LandingPage = () => { // Hapus props onLogin/onGetStarted yang lama
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
+
+  // 2. INISIALISASI NAVIGASI
+  const navigate = useNavigate();
+
+  // 3. FUNGSI UNTUK PINDAH HALAMAN
+  const handleAuth = () => {
+    navigate('/signup'); // Pastikan di App.jsx route-nya path="/signup"
+  };
 
   const features = [
     {
@@ -52,52 +62,46 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
   const packages = [
     {
       name: 'Paket Hemat',
-    subtitle: 'Coba dulu sebelum serius',
-    credits: 1,
-    price: 10000,
-    originalPrice: null,
-    pricePerToken: 10000,
-    description: '1 Token untuk 1x simulasi UTBK',
-    highlight: 'Pas buat first try & kenalan dengan sistem',
-    features: [
-      '1 Token Ujian Simulasi',
-      'Analisis Nilai Dasar',
-      'Akses Leaderboard'
-    ],
+      subtitle: 'Coba dulu sebelum serius',
+      credits: 1,
+      price: "10.000",
+      originalPrice: null,
+      description: '1 Token untuk 1x simulasi UTBK',
+      features: [
+        '1 Token Ujian Simulasi',
+        'Analisis Nilai Dasar',
+        'Akses Leaderboard'
+      ],
       color: "from-blue-500 to-cyan-500",
       popular: false
     },
     {
       name: 'Paket Pejuang',
-    subtitle: 'Paling seimbang & paling dipilih',
-    credits: 3,
-    price: 25000,
-    originalPrice: 30000,
-    pricePerToken: 8333,
-    description: '3 Token untuk latihan intensif',
-    highlight: 'Ideal untuk uji strategi sebelum all-in UTBK',
-    features: [
-      '3 Token Ujian Simulasi',
-      'Analisis Nilai & Ranking Akurat',
-      'Leaderboard Nasional'
-    ],
+      subtitle: 'Paling seimbang & paling dipilih',
+      credits: 3,
+      price: "25.000",
+      originalPrice: "30.000",
+      description: '3 Token untuk latihan intensif',
+      features: [
+        '3 Token Ujian Simulasi',
+        'Analisis Nilai & Ranking Akurat',
+        'Leaderboard Nasional'
+      ],
       color: "from-purple-500 to-pink-500",
       popular: true
     },
     {
       name: 'Paket Sultan',
-    subtitle: 'Paling hemat untuk pejuang serius',
-    credits: 10,
-    price: 75000,
-    originalPrice: 100000,
-    pricePerToken: 7500,
-    description: '10 Token untuk persiapan maksimal',
-    highlight: 'Lebih hemat dibanding beli satuan',
-    features: [
-      '10 Token Ujian Simulasi',
-      'Analisis Lengkap & Riwayat',
-      'Leaderboard Nasional'
-    ],
+      subtitle: 'Paling hemat untuk pejuang serius',
+      credits: 10,
+      price: "75.000",
+      originalPrice: "100.000",
+      description: '10 Token untuk persiapan maksimal',
+      features: [
+        '10 Token Ujian Simulasi',
+        'Analisis Lengkap & Riwayat',
+        'Leaderboard Nasional'
+      ],
       color: "from-orange-500 to-red-500",
       popular: false
     }
@@ -188,11 +192,15 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               <a href="#pricing" className="text-gray-600 hover:text-indigo-600 font-medium transition">Harga</a>
               <a href="#testimonials" className="text-gray-600 hover:text-indigo-600 font-medium transition">Testimoni</a>
               <a href="#faq" className="text-gray-600 hover:text-indigo-600 font-medium transition">FAQ</a>
-              <a href="SignUpPages.jsx"><button onClick={onLogin} className="text-indigo-600 hover:text-indigo-700 font-semibold">
+              
+              {/* TOMBOL LOGIN YANG BENAR */}
+              <button onClick={handleAuth} className="text-indigo-600 hover:text-indigo-700 font-semibold">
                 Login
-              </button></a>
+              </button>
+              
+              {/* TOMBOL MULAI YANG BENAR */}
               <button 
-                onClick={onGetStarted}
+                onClick={handleAuth}
                 className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition"
               >
                 Mulai Gratis
@@ -215,10 +223,12 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               <a href="#pricing" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">Harga</a>
               <a href="#testimonials" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">Testimoni</a>
               <a href="#faq" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">FAQ</a>
-              <a href="SignUpPages.jsx"><button onClick={onLogin} className="block w-full text-left text-indigo-600 font-semibold py-2">Login</button></a>
-              <a href="SignUpPages.jsx"><button onClick={onGetStarted} className="block w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg">
+              
+              {/* TOMBOL MOBILE YANG BENAR */}
+              <button onClick={handleAuth} className="block w-full text-left text-indigo-600 font-semibold py-2">Login</button>
+              <button onClick={handleAuth} className="block w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg">
                 Mulai Gratis
-              </button></a>
+              </button>
             </div>
           )}
         </div>
@@ -249,19 +259,21 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
           </p>
     
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="SignUpPages.jsx"><button 
-                onClick={onGetStarted}
+              {/* TOMBOL HERO YANG BENAR */}
+              <button 
+                onClick={handleAuth}
                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-indigo-300 transform hover:-translate-y-1 transition flex items-center gap-2 group"
               >
                 Daftar Sekarang - Gratis
                 <ArrowRight className="group-hover:translate-x-1 transition" />
-              </button></a>
-              <a href="SignUpPages.jsx"><button 
-                onClick={onLogin}
+              </button>
+              
+              <button 
+                onClick={handleAuth}
                 className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl border-2 border-indigo-200 transform hover:-translate-y-1 transition"
               >
                 Sudah Punya Akun?
-              </button></a>
+              </button>
             </div>
 
             {/* Stats */}
@@ -344,7 +356,7 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                 <h3 className="text-2xl font-black text-gray-900 mb-1">{pkg.name}</h3>
                   {pkg.popular && (
                     <p className="text-sm text-gray-500 mb-4">
-                      Paling seimbang untuk progres nyata
+                      {pkg.subtitle}
                     </p>
                   )}
 
@@ -391,8 +403,9 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                   ))}
                 </ul>
                 
+                {/* TOMBOL PAKET YANG BENAR */}
                 <button 
-                  onClick={onGetStarted}
+                  onClick={handleAuth}
                   className={`w-full py-3 rounded-xl font-bold text-white shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition bg-gradient-to-r ${pkg.color}`}
                 >
                   {pkg.popular ? 'Mulai Latihan Serius' : 'Pilih Paket'}
@@ -487,7 +500,7 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
             Bergabunglah dengan ribuan siswa yang sudah merasakan manfaatnya. Mulai persiapan UTBK-mu sekarang!
           </p>
           <button 
-            onClick={onGetStarted}
+            onClick={handleAuth}
             className="px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg shadow-2xl hover:shadow-white/20 transform hover:-translate-y-1 transition inline-flex items-center gap-3 group"
           >
             Daftar Gratis Sekarang
