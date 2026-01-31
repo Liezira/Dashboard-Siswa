@@ -6,8 +6,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   updateProfile,
-  sendPasswordResetEmail, // <--- Import Baru
-  sendEmailVerification   // <--- Import Baru
+  sendPasswordResetEmail, 
+  sendEmailVerification 
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore'; 
 import { auth, db } from './firebase'; 
@@ -78,9 +78,16 @@ const SignUpPages = () => {
           generatedTokens: []
         });
 
-        // 🔥 KIRIM EMAIL VERIFIKASI
-        await sendEmailVerification(user);
-        alert("Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi sebelum login.");
+        // 🔥 LOGIC BARU: Kirim Email dengan Redirect Link ke App Kita
+        const actionCodeSettings = {
+          // Mengarah ke route /verify-email yang akan kita buat di App.jsx nanti
+          url: window.location.origin + '/verify-email', 
+          handleCodeInApp: true,
+        };
+
+        await sendEmailVerification(user, actionCodeSettings);
+        
+        alert("Akun berhasil dibuat! Cek email untuk verifikasi (Link akan diarahkan kembali ke sini).");
       }
     } catch (err) {
       console.error(err);
@@ -94,13 +101,17 @@ const SignUpPages = () => {
     }
   };
 
-  // --- LOGIC LUPA PASSWORD ---
+  // --- LOGIC LUPA PASSWORD (DENGAN REDIRECT) ---
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     if(!forgotEmail) return;
     setLoading(true);
     try {
-      await sendPasswordResetEmail(auth, forgotEmail);
+      const actionCodeSettings = {
+        url: window.location.origin + '/login', // Balik ke halaman login setelah reset
+        handleCodeInApp: true,
+      };
+      await sendPasswordResetEmail(auth, forgotEmail, actionCodeSettings);
       setForgotStatus('success');
     } catch (error) {
       setForgotStatus('error');
