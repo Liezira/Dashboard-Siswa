@@ -147,7 +147,7 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
                 <img
                   src="/LogoRuangSimulasi.svg"
                   alt="Logo Ruang Simulasi"
-                  className="w-20 h-20"
+                  className="w-28 h-28"
                 />
             </div>
 
