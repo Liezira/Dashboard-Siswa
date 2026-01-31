@@ -161,9 +161,9 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               <a href="#pricing" className="text-gray-600 hover:text-indigo-600 font-medium transition">Harga</a>
               <a href="#testimonials" className="text-gray-600 hover:text-indigo-600 font-medium transition">Testimoni</a>
               <a href="#faq" className="text-gray-600 hover:text-indigo-600 font-medium transition">FAQ</a>
-              <button onClick={onLogin} className="text-indigo-600 hover:text-indigo-700 font-semibold">
+              <a href="SignUpPages.jsx"><button onClick={onLogin} className="text-indigo-600 hover:text-indigo-700 font-semibold">
                 Login
-              </button>
+              </button></a>
               <button 
                 onClick={onGetStarted}
                 className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition"
@@ -188,10 +188,10 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
               <a href="#pricing" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">Harga</a>
               <a href="#testimonials" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">Testimoni</a>
               <a href="#faq" className="block text-gray-600 hover:text-indigo-600 font-medium py-2">FAQ</a>
-              <button onClick={onLogin} className="block w-full text-left text-indigo-600 font-semibold py-2">Login</button>
-              <button onClick={onGetStarted} className="block w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg">
+              <a href="SignUpPages.jsx"><button onClick={onLogin} className="block w-full text-left text-indigo-600 font-semibold py-2">Login</button></a>
+              <a href="SignUpPages.jsx"><button onClick={onGetStarted} className="block w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold shadow-lg">
                 Mulai Gratis
-              </button>
+              </button></a>
             </div>
           )}
         </div>
@@ -222,20 +222,20 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
           </p>
     
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <button 
+              <a href="SignUpPages.jsx"><button 
                 onClick={onGetStarted}
                 className="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-lg shadow-2xl hover:shadow-indigo-300 transform hover:-translate-y-1 transition flex items-center gap-2 group"
               >
                 Daftar Sekarang - Gratis
                 <ArrowRight className="group-hover:translate-x-1 transition" />
-              </button>
-              <button 
+              </button></a>
+              <a href="SignUpPages.jsx"><button 
                 onClick={onLogin}
                 className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl border-2 border-indigo-200 transform hover:-translate-y-1 transition"
               >
                 Sudah Punya Akun?
               </button>
-            </div>
+            </div></a>
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
