@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, onSnapshot, collection, query, where, orderBy } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, where, orderBy, runTransaction, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from './firebase'; 
 
 // --- COMPONENTS ---
@@ -52,28 +52,71 @@ const Dashboard = ({ user }) => {
   };
 
   const handleGenerateToken = async () => {
-    const credits = userData?.credits || 0;
+    // 1. Cek Saldo di State Lokal dulu (Biar cepat)
+    const currentCredits = userData?.credits || 0;
     
-    if (credits < 1) {
-        // Tampilkan Modal Top Up jika credit kurang
+    if (currentCredits < 1) {
+        alert("Credit tidak cukup! Silakan Top Up credit terlebih dahulu.");
         setShowPackageModal(true);
         return;
     }
 
-    if (!confirm("Gunakan 1 Credit untuk token ujian?")) return;
+    if (!confirm("Gunakan 1 Credit untuk membuat token ujian baru?")) return;
 
     setIsGenerating(true);
-    // Simulasi Generate Token (Nanti diganti Cloud Function)
-    setTimeout(() => {
-        alert("Permintaan token diterima. Hubungi Admin untuk validasi sementara.");
-        setIsGenerating(false);
-    }, 1000);
-  };
 
-  const handleBuyCredits = () => {
-    setShowPackageModal(true);
-  };
+    try {
+      // MENGGUNAKAN TRANSACTION (Agar saldo kepotong & token kebuat secara bersamaan/aman)
+      await runTransaction(db, async (transaction) => {
+        // A. Baca data user terbaru dari database (untuk memastikan saldo valid)
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await transaction.get(userRef);
+        
+        if (!userDoc.exists()) throw "User tidak ditemukan!";
+        
+        const latestCredits = userDoc.data().credits || 0;
+        if (latestCredits < 1) {
+          throw "Credit tidak cukup (transaksi dibatalkan).";
+        }
 
+        // B. Siapkan Data Token Baru
+        // Generate kode acak 6 karakter (Misal: UTBK-X7Z9A)
+        const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const tokenCode = `UTBK-${randomCode}`;
+        const tokenRef = doc(db, 'tokens', tokenCode);
+
+        // C. Eksekusi: Potong Saldo & Simpan Token
+        // 1. Potong Saldo User
+        transaction.update(userRef, { 
+          credits: latestCredits - 1,
+          generatedTokens: [...(userDoc.data().generatedTokens || []), tokenCode] // Simpan history di user juga
+        });
+
+        // 2. Buat Token di Database
+        transaction.set(tokenRef, {
+          tokenCode: tokenCode,
+          userId: user.uid,
+          studentName: userDoc.data().displayName,
+          studentSchool: userDoc.data().school,
+          studentPhone: userDoc.data().phone || user.email,
+          status: 'active', // Token langsung aktif
+          score: null,
+          createdAt: new Date().toISOString(),
+          isSent: true,     // Anggap sudah terkirim (karena lgsg muncul di dashboard siswa)
+          sentMethod: 'DASHBOARD_GENERATE'
+        });
+      });
+
+      alert("Berhasil! Token ujian telah dibuat. Silakan cek di daftar Riwayat Token.");
+      
+    } catch (error) {
+      console.error("Gagal generate:", error);
+      alert("Gagal membuat token: " + error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans">
       
