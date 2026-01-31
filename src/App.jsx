@@ -145,14 +145,11 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
             {/* Logo */}
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                {/* 
-                  INSTRUKSI: Ganti dengan logo Anda
-                  <img src="/path/to/logo.png" alt="Logo" className="w-8 h-8" />
-                */}
+                  <img src="public/LogoRuangSimulasi.svg" alt="Logo" className="w-8 h-8" />
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <span className="text-xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                UTBK Simulator
+                RuangSimulasi
               </span>
             </div>
 
@@ -497,7 +494,7 @@ const LandingPage = ({ onGetStarted, onLogin }) => {
 
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-500 text-sm">
-              © 2026 UTBK Simulator. All rights reserved. Created with dedication by RuangSimulasi
+              © 2026 RuangSimulasi. All rights reserved. Created with dedication by LieziraGroup
             </p>
             <div className="flex gap-6 text-sm">
               <a href="#" className="hover:text-indigo-400 transition">Privacy Policy</a>
