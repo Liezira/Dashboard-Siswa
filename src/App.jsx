@@ -161,7 +161,7 @@ const Dashboard = ({ user }) => {
         const userRef = doc(db, 'users', user.uid);
         const userDoc = await transaction.get(userRef);
         if (!userDoc.exists() || (userDoc.data().credits || 0) < 1) throw "Credit tidak valid.";
-        const tokenCode = `UTBK-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+        const tokenCode = `UTBK-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
         const tokenRef = doc(db, 'tokens', tokenCode);
         transaction.update(userRef, { credits: (userDoc.data().credits || 0) - 1, generatedTokens: [...(userDoc.data().generatedTokens || []), tokenCode] });
         transaction.set(tokenRef, { tokenCode, userId: user.uid, studentName: userDoc.data().displayName, studentSchool: userDoc.data().school, studentPhone: userDoc.data().phone || user.email, status: 'active', score: null, createdAt: new Date().toISOString(), isSent: true, sentMethod: 'DASHBOARD_GENERATE' });
