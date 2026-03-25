@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword, 
   updateProfile,
   sendPasswordResetEmail, 
-  sendEmailVerification 
+  sendEmailVerification,
+  signOut
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore'; 
 import { auth, db } from './firebase'; 
@@ -66,21 +67,33 @@ const SignUpPages = () => {
 
         await updateProfile(user, { displayName: formData.displayName });
 
-        // Simpan ke Database
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: formData.email,
-          displayName: formData.displayName,
-          school: formData.school,
-          role: 'student',
-          credits: 0,
-          createdAt: new Date().toISOString(),
-          generatedTokens: []
-        });
+        // FIX Bug 6: Paksa refresh token supaya credentials sudah propagated ke Firestore
+        // sebelum melakukan write (mencegah race condition App Check)
+        await user.getIdToken(true);
 
-        // 🔥 LOGIC BARU: Kirim Email dengan Redirect Link ke App Kita
+        // FIX Bug 1: Bungkus setDoc dalam try/catch tersendiri.
+        // Jika Firestore write gagal, user HARUS tahu & sesi di-reset agar tidak
+        // terjebak dalam state "sudah auth tapi data kosong di Firestore".
+        try {
+          await setDoc(doc(db, 'users', user.uid), {
+            uid: user.uid,
+            email: formData.email,
+            displayName: formData.displayName,
+            school: formData.school,
+            role: 'student',
+            credits: 0,
+            createdAt: new Date().toISOString(),
+            generatedTokens: []
+          });
+        } catch (firestoreErr) {
+          // Paksa sign-out agar saat user login ulang, auto-heal di login flow akan
+          // membuat dokumen yang hilang (mekanisme sudah ada di blok login di atas)
+          await signOut(auth);
+          throw new Error("Akun dibuat, tapi data gagal tersimpan. Silakan login untuk mencoba lagi secara otomatis.");
+        }
+
+        // Kirim Email Verifikasi dengan Redirect Link
         const actionCodeSettings = {
-          // Mengarah ke route /verify-email yang akan kita buat di App.jsx nanti
           url: window.location.origin + '/verify-email', 
           handleCodeInApp: true,
         };

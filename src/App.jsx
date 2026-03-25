@@ -97,7 +97,24 @@ const VerificationScreen = ({ user }) => {
   };
 
   const handleLogout = async () => { await signOut(auth); navigate('/'); };
-  const handleReload = () => { window.location.reload(); };
+  
+  // FIX Bug 2: Paksa Firebase fetch status emailVerified terbaru dari server.
+  // window.location.reload() tidak akan memperbarui cache auth SDK.
+  const handleReload = async () => {
+    setLoading(true);
+    try {
+      await auth.currentUser.reload();
+      if (auth.currentUser.emailVerified) {
+        navigate('/dashboard');
+      } else {
+        alert("Email belum terverifikasi. Pastikan kamu sudah klik link verifikasi di email (cek juga folder SPAM).");
+      }
+    } catch (e) {
+      alert("Gagal memeriksa status verifikasi. Coba lagi.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
@@ -110,7 +127,7 @@ const VerificationScreen = ({ user }) => {
           <p className="text-xs text-orange-700 leading-snug"><b>Tidak ada email?</b> Cek folder <b>SPAM</b> atau <b>JUNK</b>.</p>
         </div>
         <div className="space-y-3">
-          <button onClick={handleReload} className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2"><RefreshCw size={18}/> Saya Sudah Klik Link</button>
+          <button onClick={handleReload} disabled={loading} className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-60">{loading ? <Loader2 className="animate-spin" size={18}/> : <RefreshCw size={18}/>} Saya Sudah Klik Link</button>
           <button onClick={handleResend} disabled={loading || sent} className="w-full py-3 bg-white border-2 border-indigo-100 text-indigo-600 rounded-xl font-bold hover:bg-indigo-50 transition">{loading ? 'Mengirim...' : sent ? 'Email Terkirim (Cek Spam)' : 'Kirim Ulang Email'}</button>
           <button onClick={handleLogout} className="text-gray-400 text-sm hover:text-red-500 underline mt-4">Keluar / Ganti Akun</button>
         </div>
@@ -140,13 +157,47 @@ const Dashboard = ({ user }) => {
 
   useEffect(() => {
     if (!user) return;
-    const q = query(collection(db, 'tokens'), where('userId', '==', user.uid));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const loadedTokens = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
-      loadedTokens.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setTokens(loadedTokens);
+
+    // FIX Bug 3: Jalankan DUA query sekaligus dan merge hasilnya.
+    // Query 1: Token yang dibuat sendiri oleh siswa (userId == user.uid)
+    // Query 2: Token yang dibuat Admin dengan studentPhone == user.email
+    //          (Admin biasanya mengisi email siswa sebagai no. HP jika siswa sudah terdaftar)
+    // Hasil di-dedup berdasarkan tokenCode agar tidak ada duplikat.
+
+    const tokenMap = new Map();
+
+    const updateTokens = () => {
+      const merged = Array.from(tokenMap.values());
+      merged.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setTokens(merged);
+    };
+
+    const q1 = query(collection(db, 'tokens'), where('userId', '==', user.uid));
+    const unsub1 = onSnapshot(q1, (snapshot) => {
+      snapshot.docs.forEach(d => tokenMap.set(d.id, { id: d.id, ...d.data() }));
+      // Bersihkan token lama dari query ini yang sudah tidak ada
+      const currentIds = new Set(snapshot.docs.map(d => d.id));
+      tokenMap.forEach((_, key) => {
+        const val = tokenMap.get(key);
+        if (val.userId === user.uid && !currentIds.has(key)) tokenMap.delete(key);
+      });
+      updateTokens();
     });
-    return () => unsub();
+
+    const q2 = query(collection(db, 'tokens'), where('studentPhone', '==', user.email));
+    const unsub2 = onSnapshot(q2, (snapshot) => {
+      snapshot.docs.forEach(d => {
+        const data = d.data();
+        // Hanya tambahkan jika belum ada userId (token murni dari admin)
+        // atau kalau sudah ada di map (token dashboard sendiri), skip agar tidak tumpang tindih
+        if (!tokenMap.has(d.id)) {
+          tokenMap.set(d.id, { id: d.id, ...data });
+        }
+      });
+      updateTokens();
+    });
+
+    return () => { unsub1(); unsub2(); };
   }, [user]);
 
   const handleLogout = async () => { await signOut(auth); navigate('/'); };
